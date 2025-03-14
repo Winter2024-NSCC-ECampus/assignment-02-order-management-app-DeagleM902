@@ -6,6 +6,8 @@ import org.example.a02.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -22,4 +24,19 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         return userRepository.save(user);
     }
+
+    public void deleteUserById(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    public Object getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .toList();
+    }
+
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
 }
