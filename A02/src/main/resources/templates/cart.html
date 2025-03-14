@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Cart</title>
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h1>Your Cart</h1>
+
+    <div th:if="${#strings.isEmpty(error) == false}" class="alert alert-error">
+        <span th:text="${error}"></span>
+    </div>
+
+    <div th:if="${#strings.isEmpty(success) == false}" class="alert alert-success">
+        <span th:text="${success}"></span>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${cartItems}">
+            <td th:text="${item.product.name}"></td>
+            <td th:text="${'$' + #numbers.formatDecimal(item.product.price, 1, 2)}"></td>
+            <td>
+                <form th:action="@{/cart/update}" method="post">
+                    <input type="hidden" name="productId" th:value="${item.product.id}">
+                    <input type="number" name="quantity" th:value="${item.quantity}"
+                           min="1" th:max="${item.product.quantity}" style="width: 60px;">
+                    <button type="submit">Update</button>
+                </form>
+            </td>
+            <td th:text="${'$' + #numbers.formatDecimal(item.product.price * item.quantity, 1, 2)}"></td>
+            <td>
+                <form th:action="@{/cart/remove}" method="post">
+                    <input type="hidden" name="productId" th:value="${item.product.id}">
+                    <button type="submit" class="btn-danger">Remove</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="cart-total" th:if="${not #lists.isEmpty(cartItems)}">
+        <p>Total: <span th:text="${'$' + #numbers.formatDecimal(total, 1, 2)}"></span></p>
+    </div>
+    <a th:href="@{/products}">Continue Shopping</a>
+</div>
+</body>
+</html>
